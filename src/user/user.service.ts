@@ -1,14 +1,19 @@
-import { Injectable, Scope, Logger } from '@nestjs/common';
+import { Injectable, Scope , Inject} from '@nestjs/common';
 import * as fs from 'fs';
 import * as path from 'path';
+import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
+import { Logger } from 'winston';
 
 @Injectable({ scope: Scope.REQUEST })
 export class UserService {
   private users: any[];
+ //private readonly logger = new Logger(UserService.name);
+ private _logger: Logger;
 
-  constructor() {
+  constructor(@Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger) {
     const usersPath = path.join(__dirname, 'users.json');
     this.users = JSON.parse(fs.readFileSync(usersPath, 'utf8'));
+    this._logger = logger
   }
 
   /**
@@ -19,20 +24,10 @@ export class UserService {
    * @return {any[]} An array of user objects.
    */
   getUsers(): any[] {
-    Logger.log('Get Users');
+    this._logger.info('Get Users');
 
-    // copy users to new array and add random number to the response to avoid 304 http code
-    var users_copy = this.users.slice();
-    const random = Math.floor(Math.random() * 100000);
-    users_copy.push({
-      id: '66895b8c5bc91291c2f388b7',
-      name: 'user' + random,
-      email: 'user' + random + '@kindaloo.com',
-      about: 'about',
-    });
-
-    return users_copy.map((user) => {
-      Logger.log('Processing user: ' + user.name);
+    return this.users.map((user) => {
+      // Logger.log('Processing user:> ' + user.name);
       // Inefficient string operations
       user.name = this.capitalizeInefficient(user.name);
       user.about = this.capitalizeInefficient(user.about);
