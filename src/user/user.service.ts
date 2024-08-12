@@ -4,7 +4,7 @@ import * as path from 'path';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { Logger } from 'winston';
 
-@Injectable({ scope: Scope.REQUEST })
+@Injectable()
 export class UserService {
   private users: any[];
  //private readonly logger = new Logger(UserService.name);
