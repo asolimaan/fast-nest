@@ -29,8 +29,8 @@ export class UserService {
     return this.users.map((user) => {
       // Logger.log('Processing user:> ' + user.name);
       // Inefficient string operations
-      user.name = this.capitalizeInefficient(user.name);
-      user.about = this.capitalizeInefficient(user.about);
+      user.name = this.capitalizeOptimized(user.name);
+      user.about = this.capitalizeOptimized(user.about);
       return user;
     });
   }
@@ -41,28 +41,11 @@ export class UserService {
    * @param {string} str - The input string to be capitalized.
    * @return {string} The capitalized string.
    */
-  private capitalizeInefficient(str: string): string {
-    // Split the string into words
-    const words = str.split(' ');
-
-    // Process each word
-    for (let i = 0; i < words.length; i++) {
-      let word = words[i];
-      let capitalizedWord = '';
-
-      // Capitalize the first character (inefficient way)
-      for (let j = 0; j < word.length; j++) {
-        if (j === 0) {
-          capitalizedWord += word[j].toUpperCase();
-        } else {
-          capitalizedWord += word[j].toLowerCase();
-        }
-      }
-
-      // Replace the word in the array
-      words[i] = capitalizedWord;
-    }
-
-    return words.join(' ');
+  private capitalizeOptimized(str: string): string {
+   
+    return str
+      .split(' ')
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ') ;
   }
 }
