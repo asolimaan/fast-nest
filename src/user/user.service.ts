@@ -1,4 +1,4 @@
-import { Injectable, Scope , Inject} from '@nestjs/common';
+import { Injectable, Scope, Inject } from '@nestjs/common';
 import * as fs from 'fs';
 import * as path from 'path';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
@@ -7,13 +7,14 @@ import { Logger } from 'winston';
 @Injectable()
 export class UserService {
   private users: any[];
- //private readonly logger = new Logger(UserService.name);
- private _logger: Logger;
+  private _logger: Logger;
 
-  constructor(@Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger) {
+  constructor(
+    @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
+  ) {
     const usersPath = path.join(__dirname, 'users.json');
     this.users = JSON.parse(fs.readFileSync(usersPath, 'utf8'));
-    this._logger = logger
+    this._logger = logger;
   }
 
   /**
@@ -27,8 +28,6 @@ export class UserService {
     this._logger.info('Get Users');
 
     return this.users.map((user) => {
-      // Logger.log('Processing user:> ' + user.name);
-      // Inefficient string operations
       user.name = this.capitalizeOptimized(user.name);
       user.about = this.capitalizeOptimized(user.about);
       return user;
@@ -42,10 +41,9 @@ export class UserService {
    * @return {string} The capitalized string.
    */
   private capitalizeOptimized(str: string): string {
-   
     return str
       .split(' ')
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(' ') ;
+      .join(' ');
   }
 }
